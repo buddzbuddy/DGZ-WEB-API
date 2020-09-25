@@ -84,5 +84,72 @@ namespace DGZ_WEB_API.Controllers
 
             }
         }
+
+        [HttpGet("{inn}")]
+        public async Task<ActionResult<tpb_usiness_activity_date_by_inn_response>> GetIPByInn(string inn)
+        {
+            var obj = _context.tpb_usiness_activity_date_by_inn_responses.FirstOrDefault(x => x.TIN == inn);
+
+            if (obj != null) return Ok(obj);
+            else
+            {
+                using (var client = new HttpClient())
+                {
+                    var json = JsonConvert.SerializeObject(
+                        new
+                        {
+                            clientId = "d967b6bf-2c0b-469b-a501-d64f7e348cb8",
+                            orgName = "ПОРТАЛ",
+                            request = new
+                            {
+                                TPBusinessActivityDateByInn = new
+                                {
+                                    request = new
+                                    {
+                                        INN = inn
+                                    }
+                                }
+                            }
+                        });
+
+                    var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var url = "http://" + _appSettings.Value.SODHost + "/ServiceConstructor/SoapClient/SendRequest2";
+
+                    var response = await client.PostAsync(url, data);
+
+                    string result = response.Content.ReadAsStringAsync().Result;
+
+                    var j = JObject.Parse(result);
+                    if (j["response"]["TPBusinessActivityDateByInnResponse"]["response"] != null)
+                    {
+                        var s = j["response"]["TPBusinessActivityDateByInnResponse"]["response"];
+                        obj = new tpb_usiness_activity_date_by_inn_response
+                        {
+                            created_at = DateTime.Now,
+                            updated_at = DateTime.Now,
+                            FullAddress = s["FullAddress"].ToString(),
+                            FullName = s["FullName"].ToString(),
+                            TIN = s["TIN"].ToString(),
+                            RayonCode = s["RayonCode"].ToString(),
+                            TaxActiveDate = DateTime.Parse(s["TaxActiveDate"].ToString()),
+                            RayonName = s["RayonName"].ToString(),
+                            TaxTypeCode = s["TaxTypeCode"].ToString().Trim()
+                        };
+                        if (!string.IsNullOrEmpty(obj.TaxTypeCode))
+                        {
+                            var codeName = _context.taxe_codes.FirstOrDefault(x => x.Code.Trim() == obj.TaxTypeCode.Trim());
+                            if (codeName != null) obj.TaxTypeName = codeName.Name;
+                        }
+                        _context.tpb_usiness_activity_date_by_inn_responses.Add(obj);
+                        _context.SaveChanges();
+                        return Ok(obj);
+                    }
+                    else return NotFound();
+                }
+
+            }
+        }
+
     }
 }

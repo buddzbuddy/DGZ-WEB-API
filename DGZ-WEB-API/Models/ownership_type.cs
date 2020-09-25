@@ -5,11 +5,8 @@ using System.Threading.Tasks;
 
 namespace DGZ_WEB_API.Models
 {
-    public class ownership_type
+    public class ownership_type : baseEFModel
     {
-        public int id { get; set; }
         public string name { get; set; }
-        public DateTime created_at { get; set; }
-        public DateTime updated_at { get; set; }
     }
 }
