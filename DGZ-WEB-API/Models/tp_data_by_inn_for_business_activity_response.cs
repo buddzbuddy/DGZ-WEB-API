@@ -11,6 +11,6 @@ namespace DGZ_WEB_API.Models
         public string RayonCode { get; set; }
         public string FullName { get; set; }
         public string FullAddress { get; set; }
-        public string Zip { get; set; }
+        public string ZIP { get; set; }
     }
 }
