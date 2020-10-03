@@ -73,7 +73,8 @@ namespace DGZ_WEB_API.Controllers
                             FullAddress = s["FullAddress"].ToString(),
                             FullName = s["FullName"].ToString(),
                             inn = s["inn"].ToString(),
-                            RayonCode = s["RayonCode"].ToString()
+                            RayonCode = s["RayonCode"].ToString(),
+                            Zip = s["Zip"].ToString()
                         };
                         _context.tp_data_by_inn_for_business_activity_responses.Add(obj);
                         _context.SaveChanges();
