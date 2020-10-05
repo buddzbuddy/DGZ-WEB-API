@@ -28,7 +28,7 @@ namespace DGZ_WEB_API.Controllers
 
 
         [HttpGet("{inn}")]
-        public async Task<ActionResult<tp_data_by_inn_for_business_activity_response>> GetOrganizationByInn(string inn)
+        public async Task<ActionResult<tp_data_by_inn_for_business_activity_response[]>> GetOrganizationByInn(string inn)
         {
             var obj = _context.tp_data_by_inn_for_business_activity_responses.FirstOrDefault(x => x.inn == inn);
 
@@ -78,7 +78,7 @@ namespace DGZ_WEB_API.Controllers
                         };
                         _context.tp_data_by_inn_for_business_activity_responses.Add(obj);
                         _context.SaveChanges();
-                        return Ok(obj);
+                        return Ok(new[] { obj });
                     }
                     else return NotFound();
                 }
