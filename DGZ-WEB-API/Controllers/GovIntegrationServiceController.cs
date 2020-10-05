@@ -32,7 +32,7 @@ namespace DGZ_WEB_API.Controllers
         {
             var obj = _context.tp_data_by_inn_for_business_activity_responses.FirstOrDefault(x => x.inn == inn);
 
-            if (obj != null) return Ok(obj);
+            if (obj != null) return Ok(new[] { obj });
             else
             {
                 using (var client = new HttpClient())
