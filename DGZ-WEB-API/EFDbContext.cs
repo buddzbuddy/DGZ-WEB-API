@@ -21,5 +21,11 @@ namespace DGZ_WEB_API
         public DbSet<taxe_code> taxe_codes { get; set; }
         public DbSet<tp_data_by_inn_for_business_activity_response> tp_data_by_inn_for_business_activity_responses { get; set; }
         public DbSet<tpb_usiness_activity_date_by_inn_response> tpb_usiness_activity_date_by_inn_responses { get; set; }
+        public DbSet<counterpart_type> counterpart_types { get; set; }
+        public DbSet<counterpart> counterparts { get; set; }
+        public DbSet<country> countries { get; set; }
+        public DbSet<currency> currencies { get; set; }
+        public DbSet<procuring_entity> procuring_entities { get; set; }
+        public DbSet<registrator> registrators { get; set; }
     }
 }
