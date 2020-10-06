@@ -152,5 +152,16 @@ namespace DGZ_WEB_API.Controllers
             }
         }
 
+        [HttpGet("{inn}")]
+        public async Task<ActionResult<supplier_member[]>> GetSupplierMembers(string inn)
+        {
+            var supplierObj = _context.suppliers.FirstOrDefault(x => x.inn == inn);
+            if(supplierObj != null)
+            {
+                return _context.supplier_members.Where(x => x.supplier == supplierObj.id).ToArray();
+            }
+            return new supplier_member[] { };
+        }
+
     }
 }
