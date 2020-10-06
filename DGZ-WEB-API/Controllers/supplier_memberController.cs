@@ -23,16 +23,16 @@ namespace DGZ_WEB_API.Controllers
 
         // GET: api/supplier_member
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<supplier_member>>> Getsupplier_member()
+        public async Task<ActionResult<IEnumerable<supplier_member>>> Getsupplier_members()
         {
-            return await _context.supplier_member.ToListAsync();
+            return await _context.supplier_members.ToListAsync();
         }
 
         // GET: api/supplier_member/5
         [HttpGet("{id}")]
         public async Task<ActionResult<supplier_member>> Getsupplier_member(int id)
         {
-            var supplier_member = await _context.supplier_member.FindAsync(id);
+            var supplier_member = await _context.supplier_members.FindAsync(id);
 
             if (supplier_member == null)
             {
@@ -76,7 +76,7 @@ namespace DGZ_WEB_API.Controllers
         [HttpPost]
         public async Task<ActionResult<supplier_member>> Postsupplier_member(supplier_member supplier_member)
         {
-            _context.supplier_member.Add(supplier_member);
+            _context.supplier_members.Add(supplier_member);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Getsupplier_member", new { id = supplier_member.id }, supplier_member);
@@ -86,13 +86,13 @@ namespace DGZ_WEB_API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<supplier_member>> Deletesupplier_member(int id)
         {
-            var supplier_member = await _context.supplier_member.FindAsync(id);
+            var supplier_member = await _context.supplier_members.FindAsync(id);
             if (supplier_member == null)
             {
                 return NotFound();
             }
 
-            _context.supplier_member.Remove(supplier_member);
+            _context.supplier_members.Remove(supplier_member);
             await _context.SaveChangesAsync();
 
             return supplier_member;
@@ -100,7 +100,7 @@ namespace DGZ_WEB_API.Controllers
 
         private bool supplier_memberExists(int id)
         {
-            return _context.supplier_member.Any(e => e.id == id);
+            return _context.supplier_members.Any(e => e.id == id);
         }
     }
 }
