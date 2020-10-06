@@ -27,5 +27,6 @@ namespace DGZ_WEB_API
         public DbSet<currency> currencies { get; set; }
         public DbSet<procuring_entity> procuring_entities { get; set; }
         public DbSet<registrator> registrators { get; set; }
+        public DbSet<DGZ_WEB_API.Models.supplier_member> supplier_member { get; set; }
     }
 }
