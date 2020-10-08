@@ -19,5 +19,7 @@ namespace DGZ_WEB_API.Models
         public string bankName { get; set; }
         public string bankAccount { get; set; }
         public string bic { get; set; }
+        public string zip { get; set; }
+        public string rayonCode { get; set; }
     }
 }
