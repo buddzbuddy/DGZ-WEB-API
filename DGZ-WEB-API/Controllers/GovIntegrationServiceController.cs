@@ -163,5 +163,16 @@ namespace DGZ_WEB_API.Controllers
             return new supplier_member[] { };
         }
 
+        [HttpGet("{inn}")]
+        public async Task<ActionResult<tp_data_by_inn_for_business_activity_response[]>> GetTp_data_by_inn_for_business_activity_response(string inn)
+        {
+            return _context.tp_data_by_inn_for_business_activity_responses.Where(x => x.inn == inn).ToArray();
+        }
+
+        [HttpGet("{inn}")]
+        public async Task<ActionResult<tpb_usiness_activity_date_by_inn_response[]>> GetTpb_usiness_activity_date_by_inn_response(string inn)
+        {
+            return _context.tpb_usiness_activity_date_by_inn_responses.Where(x => x.TIN == inn).ToArray();
+        }
     }
 }
