@@ -87,11 +87,11 @@ namespace DGZ_WEB_API.Controllers
         }
 
         [HttpGet("{inn}")]
-        public async Task<ActionResult<tpb_usiness_activity_date_by_inn_response>> GetIPByInn(string inn)
+        public async Task<ActionResult<tpb_usiness_activity_date_by_inn_response[]>> GetIPByInn(string inn)
         {
             var obj = _context.tpb_usiness_activity_date_by_inn_responses.FirstOrDefault(x => x.TIN == inn);
 
-            if (obj != null) return Ok(obj);
+            if (obj != null) return Ok(new[] { obj });
             else
             {
                 using (var client = new HttpClient())
@@ -144,7 +144,7 @@ namespace DGZ_WEB_API.Controllers
                         }
                         _context.tpb_usiness_activity_date_by_inn_responses.Add(obj);
                         _context.SaveChanges();
-                        return Ok(obj);
+                        return Ok(new[] { obj });
                     }
                     else return NotFound();
                 }
