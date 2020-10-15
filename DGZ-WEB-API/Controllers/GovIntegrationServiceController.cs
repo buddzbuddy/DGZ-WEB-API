@@ -89,7 +89,7 @@ namespace DGZ_WEB_API.Controllers
                             updated_at = tpObj.updated_at
                         };
 
-                        _context.suppliers.Add(supplierObj);
+                        //_context.suppliers.Add(supplierObj);
 
                         _context.SaveChanges();
                         return Ok(new[] { supplierObj });
