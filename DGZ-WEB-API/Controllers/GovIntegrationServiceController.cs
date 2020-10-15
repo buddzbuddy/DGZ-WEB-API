@@ -28,11 +28,11 @@ namespace DGZ_WEB_API.Controllers
 
 
         [HttpGet("{inn}")]
-        public async Task<ActionResult<tp_data_by_inn_for_business_activity_response[]>> GetOrganizationByInn(string inn)
+        public async Task<ActionResult<supplier[]>> GetOrganizationByInn(string inn)
         {
-            var obj = _context.tp_data_by_inn_for_business_activity_responses.FirstOrDefault(x => x.inn == inn);
+            var supplierObj = _context.suppliers.FirstOrDefault(x => x.inn == inn);
 
-            if (obj != null) return Ok(new[] { obj });
+            if (supplierObj != null) return Ok(new[] { supplierObj });
             else
             {
                 using (var client = new HttpClient())
@@ -66,7 +66,7 @@ namespace DGZ_WEB_API.Controllers
                     if (j["response"]["tpDataByINNforBusinessActivityResponse"]["response"] != null)
                     {
                         var s = j["response"]["tpDataByINNforBusinessActivityResponse"]["response"];
-                        obj = new Models.tp_data_by_inn_for_business_activity_response
+                        var tpObj = new tp_data_by_inn_for_business_activity_response
                         {
                             created_at = DateTime.Now,
                             updated_at = DateTime.Now,
@@ -76,9 +76,23 @@ namespace DGZ_WEB_API.Controllers
                             RayonCode = s["RayonCode"].ToString(),
                             ZIP = s["ZIP"].ToString()
                         };
-                        _context.tp_data_by_inn_for_business_activity_responses.Add(obj);
+                        _context.tp_data_by_inn_for_business_activity_responses.Add(tpObj);
+
+                        supplierObj = new supplier
+                        {
+                            name = tpObj.FullName,
+                            legalAddress = tpObj.FullAddress,
+                            inn = inn,
+                            zip = tpObj.ZIP,
+                            rayonCode = tpObj.RayonCode,
+                            created_at = tpObj.created_at,
+                            updated_at = tpObj.updated_at
+                        };
+
+                        _context.suppliers.Add(supplierObj);
+
                         _context.SaveChanges();
-                        return Ok(new[] { obj });
+                        return Ok(new[] { supplierObj });
                     }
                     else return NotFound();
                 }
