@@ -188,5 +188,39 @@ namespace DGZ_WEB_API.Controllers
         {
             return _context.tpb_usiness_activity_date_by_inn_responses.Where(x => x.TIN == inn).ToArray();
         }
+
+        [HttpGet("{inn}")]
+        public async Task<ActionResult<ReferenceDescriptionItem[]>> GetReferenceDescriptionItems()
+        {
+            return new ReferenceDescriptionItem[]
+            {
+                new ReferenceDescriptionItem
+                {
+                    Caption = "Тип контрагента",
+                    ApiName = typeof(counterpart_type).Name
+                },
+                new ReferenceDescriptionItem
+                {
+                    Caption = "Контрагент",
+                    ApiName = typeof(counterpart).Name
+                },
+                new ReferenceDescriptionItem
+                {
+                    Caption = "Валюта",
+                    ApiName = typeof(currency).Name
+                },
+                new ReferenceDescriptionItem
+                {
+                    Caption = "Страны",
+                    ApiName = typeof(country).Name
+                },
+            };
+        }
+
+        public class ReferenceDescriptionItem
+        {
+            public string Caption { get; set; }
+            public string ApiName { get; set; }
+        }
     }
 }
