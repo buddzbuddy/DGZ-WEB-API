@@ -189,7 +189,7 @@ namespace DGZ_WEB_API.Controllers
             return _context.tpb_usiness_activity_date_by_inn_responses.Where(x => x.TIN == inn).ToArray();
         }
 
-        [HttpGet("{inn}")]
+        [HttpGet]
         public async Task<ActionResult<ReferenceDescriptionItem[]>> GetReferenceDescriptionItems()
         {
             return new ReferenceDescriptionItem[]
