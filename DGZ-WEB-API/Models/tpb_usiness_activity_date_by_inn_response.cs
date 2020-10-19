@@ -7,8 +7,8 @@ namespace DGZ_WEB_API.Models
 {
     public class tpb_usiness_activity_date_by_inn_response : baseEFModel
     {
-        public string FullAddress { get; set; }
-        public string FullName { get; set; }
+        public string LegalAddress { get; set; }
+        public string Name { get; set; }
         public string RayonCode { get; set; }
         public string RayonName { get; set; }
         public DateTime TaxActiveDate { get; set; }

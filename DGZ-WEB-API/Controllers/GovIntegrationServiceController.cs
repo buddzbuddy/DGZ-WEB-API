@@ -143,8 +143,8 @@ namespace DGZ_WEB_API.Controllers
                         {
                             created_at = DateTime.Now,
                             updated_at = DateTime.Now,
-                            FullAddress = s["FullAddress"].ToString(),
-                            FullName = s["FullName"].ToString(),
+                            LegalAddress = s["FullAddress"].ToString(),
+                            Name = s["FullName"].ToString(),
                             TIN = s["TIN"].ToString(),
                             RayonCode = s["RayonCode"].ToString(),
                             TaxActiveDate = DateTime.Parse(s["TaxActiveDate"].ToString()),
