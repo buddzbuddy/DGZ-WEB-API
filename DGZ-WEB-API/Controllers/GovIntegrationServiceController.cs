@@ -96,7 +96,7 @@ namespace DGZ_WEB_API.Controllers
                         _context.SaveChanges();
                         return Ok(new[] { supplierObj });
                     }
-                    else return NotFound();
+                    else return Ok(new supplier[] { });
                 }
 
             }
