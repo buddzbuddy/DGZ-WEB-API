@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using DGZ_WEB_API.Models;
@@ -215,6 +217,39 @@ namespace DGZ_WEB_API.Controllers
                     ApiName = "countries"
                 },
             };
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<bool>> SendUserEmail(string email, string username, string password)
+        {
+            return _SendEmail(email, username, password);
+        }
+
+        private bool _SendEmail(string email, string username, string password)
+        {
+            if (string.IsNullOrEmpty(email)) return false;
+            MailMessage mail = new MailMessage();
+            /*foreach (var email in payment.PABank.email.Split(','))
+            {
+                mail.To.Add(email.Trim());
+            }*/
+            mail.To.Add(email);
+            mail.From = new MailAddress("intersoftkgz@gmail.com");
+            mail.Subject = "Уведомление логин-пароль Департамент государственных закупок пр МФ КР";
+            string Body = "<h4>Уважаемый пользователь. Ваши учетные данные успешно зарегистрированы в систему со след. параметрами:</h4>"
+                + "<p>Логин: <b>" + username + "</b></p>"
+                + "<p>Пароль: <b>" + password + "</b></p>";
+            mail.Body = Body;
+            mail.IsBodyHtml = true;
+            SmtpClient smtp = new SmtpClient();
+            smtp.Host = "smtp.gmail.com";
+            smtp.Port = 587;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential("intersoftkgz@gmail.com", "N8SFKjbZqGyzpJM"); // Enter seders User name and password  
+            smtp.EnableSsl = true;
+            smtp.Send(mail);
+
+            return true;
         }
 
         public class ReferenceDescriptionItem
