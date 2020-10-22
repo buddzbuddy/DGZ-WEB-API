@@ -197,7 +197,7 @@ namespace DGZ_WEB_API.Controllers
                 new ReferenceDescriptionItem
                 {
                     Caption = "Тип контрагента",
-                    ApiName = "counterpart_types"
+                    ApiName = "counterpart_type"
                 },
                 new ReferenceDescriptionItem
                 {
