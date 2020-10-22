@@ -197,22 +197,22 @@ namespace DGZ_WEB_API.Controllers
                 new ReferenceDescriptionItem
                 {
                     Caption = "Тип контрагента",
-                    ApiName = typeof(counterpart_type).Name
+                    ApiName = "counterpart_types"
                 },
                 new ReferenceDescriptionItem
                 {
                     Caption = "Контрагент",
-                    ApiName = typeof(counterpart).Name
+                    ApiName = "counterparts"
                 },
                 new ReferenceDescriptionItem
                 {
                     Caption = "Валюта",
-                    ApiName = typeof(currency).Name
+                    ApiName = "currencies"
                 },
                 new ReferenceDescriptionItem
                 {
                     Caption = "Страны",
-                    ApiName = typeof(country).Name
+                    ApiName = "countries"
                 },
             };
         }
