@@ -9,9 +9,9 @@ namespace DGZ_WEB_API.Models
     {
         public string name { get; set; }
         public int? counterpart_type { get; set; }
-        public string ContactData { get; set; }
-        public string Address { get; set; }
-        public string BankAccountNo { get; set; }
-        public string Comments { get; set; }
+        public string contactData { get; set; }
+        public string address { get; set; }
+        public string bankAccountNo { get; set; }
+        public string comments { get; set; }
     }
 }
