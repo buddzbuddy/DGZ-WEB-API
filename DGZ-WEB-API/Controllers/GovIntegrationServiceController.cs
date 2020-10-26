@@ -72,21 +72,21 @@ namespace DGZ_WEB_API.Controllers
                         {
                             created_at = DateTime.Now,
                             updated_at = DateTime.Now,
-                            FullAddress = s["FullAddress"].ToString(),
-                            FullName = s["FullName"].ToString(),
+                            fullAddress = s["FullAddress"].ToString(),
+                            fullName = s["FullName"].ToString(),
                             inn = s["inn"].ToString(),
-                            RayonCode = s["RayonCode"].ToString(),
-                            ZIP = s["ZIP"].ToString()
+                            rayonCode = s["RayonCode"].ToString(),
+                            zip = s["ZIP"].ToString()
                         };
                         _context.tp_data_by_inn_for_business_activity_responses.Add(tpObj);
 
                         supplierObj = new supplier
                         {
-                            name = tpObj.FullName,
-                            legalAddress = tpObj.FullAddress,
+                            name = tpObj.fullName,
+                            legalAddress = tpObj.fullAddress,
                             inn = inn,
-                            zip = tpObj.ZIP,
-                            rayonCode = tpObj.RayonCode,
+                            zip = tpObj.zip,
+                            rayonCode = tpObj.rayonCode,
                             created_at = tpObj.created_at,
                             updated_at = tpObj.updated_at
                         };
@@ -105,7 +105,7 @@ namespace DGZ_WEB_API.Controllers
         [HttpGet("{inn}")]
         public async Task<ActionResult<tpb_usiness_activity_date_by_inn_response[]>> GetIPByInn(string inn)
         {
-            var obj = _context.tpb_usiness_activity_date_by_inn_responses.FirstOrDefault(x => x.TIN == inn);
+            var obj = _context.tpb_usiness_activity_date_by_inn_responses.FirstOrDefault(x => x.tin == inn);
 
             if (obj != null) return Ok(new[] { obj });
             else
@@ -145,18 +145,18 @@ namespace DGZ_WEB_API.Controllers
                         {
                             created_at = DateTime.Now,
                             updated_at = DateTime.Now,
-                            LegalAddress = s["FullAddress"].ToString(),
-                            Name = s["FullName"].ToString(),
-                            TIN = s["TIN"].ToString(),
-                            RayonCode = s["RayonCode"].ToString(),
-                            TaxActiveDate = DateTime.Parse(s["TaxActiveDate"].ToString()),
-                            RayonName = s["RayonName"].ToString(),
-                            TaxTypeCode = s["TaxTypeCode"].ToString().Trim()
+                            legalAddress = s["FullAddress"].ToString(),
+                            name = s["FullName"].ToString(),
+                            tin = s["TIN"].ToString(),
+                            rayonCode = s["RayonCode"].ToString(),
+                            taxActiveDate = DateTime.Parse(s["TaxActiveDate"].ToString()),
+                            rayonName = s["RayonName"].ToString(),
+                            taxTypeCode = s["TaxTypeCode"].ToString().Trim()
                         };
-                        if (!string.IsNullOrEmpty(obj.TaxTypeCode))
+                        if (!string.IsNullOrEmpty(obj.taxTypeCode))
                         {
-                            var codeName = _context.taxe_codes.FirstOrDefault(x => x.Code.Trim() == obj.TaxTypeCode.Trim());
-                            if (codeName != null) obj.TaxTypeName = codeName.Name;
+                            var codeName = _context.taxe_codes.FirstOrDefault(x => x.code.Trim() == obj.taxTypeCode.Trim());
+                            if (codeName != null) obj.taxTypeName = codeName.name;
                         }
                         _context.tpb_usiness_activity_date_by_inn_responses.Add(obj);
                         _context.SaveChanges();
@@ -188,7 +188,7 @@ namespace DGZ_WEB_API.Controllers
         [HttpGet("{inn}")]
         public async Task<ActionResult<tpb_usiness_activity_date_by_inn_response[]>> GetTpb_usiness_activity_date_by_inn_response(string inn)
         {
-            return _context.tpb_usiness_activity_date_by_inn_responses.Where(x => x.TIN == inn).ToArray();
+            return _context.tpb_usiness_activity_date_by_inn_responses.Where(x => x.tin == inn).ToArray();
         }
 
         [HttpGet]

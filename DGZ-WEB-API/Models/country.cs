@@ -7,6 +7,6 @@ namespace DGZ_WEB_API.Models
 {
     public class country : baseEFModel
     {
-        public string Name { get; set; }
+        public string name { get; set; }
     }
 }

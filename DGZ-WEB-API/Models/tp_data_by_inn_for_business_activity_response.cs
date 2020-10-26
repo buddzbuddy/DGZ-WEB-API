@@ -8,9 +8,9 @@ namespace DGZ_WEB_API.Models
     public class tp_data_by_inn_for_business_activity_response : baseEFModel
     {
         public string inn { get; set; }
-        public string RayonCode { get; set; }
-        public string FullName { get; set; }
-        public string FullAddress { get; set; }
-        public string ZIP { get; set; }
+        public string rayonCode { get; set; }
+        public string fullName { get; set; }
+        public string fullAddress { get; set; }
+        public string zip { get; set; }
     }
 }

@@ -7,9 +7,9 @@ namespace DGZ_WEB_API.Models
 {
     public class procuring_entity : baseEFModel
     {
-        public string INN { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string ContactData { get; set; }
+        public string inn { get; set; }
+        public string name { get; set; }
+        public string address { get; set; }
+        public string contactData { get; set; }
     }
 }

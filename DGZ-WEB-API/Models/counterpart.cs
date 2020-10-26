@@ -7,7 +7,7 @@ namespace DGZ_WEB_API.Models
 {
     public class counterpart : baseEFModel
     {
-        public string Name { get; set; }
+        public string name { get; set; }
         public int? counterpart_type { get; set; }
         public string ContactData { get; set; }
         public string Address { get; set; }

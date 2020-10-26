@@ -7,8 +7,8 @@ namespace DGZ_WEB_API.Models
 {
     public class taxe_code:baseEFModel
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public string DetailName { get; set; }
+        public string code { get; set; }
+        public string name { get; set; }
+        public string detailName { get; set; }
     }
 }
