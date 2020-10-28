@@ -168,6 +168,58 @@ namespace DGZ_WEB_API.Controllers
             }
         }
 
+        [HttpGet("{pin}")]
+        public async Task<ActionResult<msec_detail[]>> GetMsecByPin(string pin)
+        {
+            using (var client = new HttpClient())
+            {
+                var json = JsonConvert.SerializeObject(
+                    new
+                    {
+                        clientId = "ebb7570a-5357-4afa-8430-19843b34dfd7",
+                        orgName = "ПОРТАЛ",
+                        request = new
+                        {
+                            MSECDetails = new
+                            {
+                                request = new
+                                {
+                                    PIN = pin
+                                }
+                            }
+                        }
+                    });
+
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var url = "http://" + _appSettings.Value.SODHost + "/ServiceConstructor/SoapClient/SendRequest2";
+
+                var response = await client.PostAsync(url, data);
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                var j = JObject.Parse(result);
+                if (j["response"]["MSECDetailsResponse"]["response"] != null)
+                {
+                    var s = j["response"]["MSECDetailsResponse"]["response"];
+                    var obj = new msec_detail
+                    {
+                        created_at = DateTime.Now,
+                        updated_at = DateTime.Now,
+                        organizationName = s["organizationName"].ToString(),
+                        disabilityGroup = s["disabilityGroup"].ToString(),
+                        examinationDate = (DateTime)s["examinationDate"],
+                        examinationType = s["examinationType"].ToString(),
+                        from = (DateTime)s["from"],
+                        to = (DateTime)s["to"],
+                        reExamination = s["reExamination"].ToString()
+                    };
+                    return Ok(new[] { obj });
+                }
+                else return NotFound();
+            }
+        }
+
         [HttpGet("{inn}")]
         public async Task<ActionResult<supplier_member[]>> GetSupplierMembers(string inn)
         {
