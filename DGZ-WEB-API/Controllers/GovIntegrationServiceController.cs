@@ -194,6 +194,23 @@ namespace DGZ_WEB_API.Controllers
 
                 var url = "http://" + _appSettings.Value.SODHost + "/ServiceConstructor/SoapClient/SendRequest2";
 
+                if (!_appSettings.Value.hasInternet)
+                {
+                    var obj = new msec_detail
+                    {
+                        created_at = DateTime.Now,
+                        updated_at = DateTime.Now,
+                        organizationName = "test",
+                        disabilityGroup = "test",
+                        examinationDate = (DateTime)DateTime.Now,
+                        examinationType = "test",
+                        from = DateTime.Now,
+                        to = DateTime.Now,
+                        reExamination = "test"
+                    };
+                    return Ok(new[] { obj });
+                }
+
                 var response = await client.PostAsync(url, data);
 
                 string result = response.Content.ReadAsStringAsync().Result;

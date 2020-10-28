@@ -8,5 +8,6 @@ namespace DGZ_WEB_API.Utils
     public class AppSettings
     {
         public string SODHost { get; set; }
+        public bool hasInternet { get; set; }
     }
 }
