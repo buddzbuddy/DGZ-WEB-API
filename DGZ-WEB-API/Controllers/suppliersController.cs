@@ -10,7 +10,7 @@ using DGZ_WEB_API.Models;
 
 namespace DGZ_WEB_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class suppliersController : ControllerBase
     {
@@ -23,14 +23,28 @@ namespace DGZ_WEB_API.Controllers
 
         // GET: api/suppliers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<supplier>>> Getsupplier()
+        public async Task<ActionResult<IEnumerable<supplier>>> GetByPage(int page, int size)
         {
-            return await _context.suppliers.ToListAsync();
+            if (page <= 0) page = 1;
+            var TopNo = size;
+            var SkipNo = (page - 1) * size;
+
+            var list = _context.suppliers.Skip(SkipNo).Take(TopNo);
+
+
+            return await list.ToListAsync();
+        }
+
+        // GET: api/suppliers
+        [HttpGet]
+        public async Task<ActionResult<int>> GetTotalCount()
+        {
+            return await _context.suppliers.CountAsync();
         }
 
         // GET: api/suppliers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<supplier>> Getsupplier(int id)
+        public async Task<ActionResult<supplier>> Get(int id)
         {
             var supplier = await _context.suppliers.FindAsync(id);
 
@@ -44,7 +58,7 @@ namespace DGZ_WEB_API.Controllers
 
         // PUT: api/suppliers/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Putsupplier(int id, supplier supplier)
+        public async Task<IActionResult> Put(int id, supplier supplier)
         {
             if (id != supplier.id)
             {
@@ -74,7 +88,7 @@ namespace DGZ_WEB_API.Controllers
 
         // POST: api/suppliers
         [HttpPost]
-        public async Task<ActionResult<supplier>> Postsupplier(supplier supplier)
+        public async Task<ActionResult<supplier>> Post(supplier supplier)
         {
             _context.suppliers.Add(supplier);
             await _context.SaveChangesAsync();
@@ -84,7 +98,7 @@ namespace DGZ_WEB_API.Controllers
 
         // DELETE: api/suppliers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<supplier>> Deletesupplier(int id)
+        public async Task<ActionResult<supplier>> Delete(int id)
         {
             var supplier = await _context.suppliers.FindAsync(id);
             if (supplier == null)
