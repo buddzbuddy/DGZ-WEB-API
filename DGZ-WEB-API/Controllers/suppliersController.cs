@@ -23,13 +23,20 @@ namespace DGZ_WEB_API.Controllers
 
         // GET: api/suppliers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<supplier>>> GetByPage(int page, int size)
+        public async Task<ActionResult<IEnumerable<supplier>>> GetByPage(string inn, int page, int size)
         {
             if (page <= 0) page = 1;
             var TopNo = size;
             var SkipNo = (page - 1) * size;
 
-            var list = _context.suppliers.Skip(SkipNo).Take(TopNo);
+            var query = _context.suppliers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(inn))
+            {
+                query = query.Where(x => x.inn == inn.Trim());
+            }
+
+            var list = query.Skip(SkipNo).Take(TopNo);
 
 
             return await list.ToListAsync();
