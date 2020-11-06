@@ -219,21 +219,29 @@ namespace DGZ_WEB_API.Controllers
                 if (j["response"]["MSECDetailsResponse"]["response"] != null)
                 {
                     var s = j["response"]["MSECDetailsResponse"]["response"];
-                    var obj = new msec_detail
+                    if(s["StatusCode"].ToString() == "SUCCESS")
                     {
-                        created_at = DateTime.Now,
-                        updated_at = DateTime.Now,
-                        organizationName = s["organizationName"].ToString(),
-                        disabilityGroup = s["disabilityGroup"].ToString(),
-                        examinationDate = (DateTime)s["examinationDate"],
-                        examinationType = s["examinationType"].ToString(),
-                        from = (DateTime)s["from"],
-                        to = (DateTime)s["to"],
-                        reExamination = s["reExamination"].ToString()
-                    };
-                    return Ok(new[] { obj });
+                        var obj = new msec_detail
+                        {
+                            created_at = DateTime.Now,
+                            updated_at = DateTime.Now,
+                            organizationName = s["organizationName"].ToString(),
+                            disabilityGroup = s["disabilityGroup"].ToString(),
+                            examinationDate = (DateTime)s["examinationDate"],
+                            examinationType = s["examinationType"].ToString(),
+                            from = (DateTime)s["from"],
+                            to = (DateTime)s["to"],
+                            reExamination = s["reExamination"].ToString()
+                        };
+                        return Ok(new[] { obj });
+                    }
+                    else
+                    {
+                        return Ok(new msec_detail[] {  });
+                    }
+                    
                 }
-                else return NotFound();
+                return Ok(new msec_detail[] { });
             }
         }
 
