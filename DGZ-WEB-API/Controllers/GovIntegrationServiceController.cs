@@ -225,13 +225,13 @@ namespace DGZ_WEB_API.Controllers
                         {
                             created_at = DateTime.Now,
                             updated_at = DateTime.Now,
-                            organizationName = s["organizationName"].ToString(),
-                            disabilityGroup = s["disabilityGroup"].ToString(),
-                            examinationDate = (DateTime)s["examinationDate"],
-                            examinationType = s["examinationType"].ToString(),
-                            from = (DateTime)s["from"],
-                            to = (DateTime)s["to"],
-                            reExamination = s["reExamination"].ToString()
+                            organizationName = s["OrganizationName"].ToString(),
+                            disabilityGroup = s["DisabilityGroup"].ToString(),
+                            examinationDate = (DateTime)s["ExaminationDate"],
+                            examinationType = s["ExaminationType"].ToString(),
+                            from = (DateTime)s["From"],
+                            to = (DateTime)s["To"],
+                            reExamination = s["ReExamination"].ToString()
                         };
                         return Ok(new[] { obj });
                     }
