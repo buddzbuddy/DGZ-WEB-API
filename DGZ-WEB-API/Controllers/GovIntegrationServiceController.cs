@@ -229,9 +229,9 @@ namespace DGZ_WEB_API.Controllers
                             disabilityGroup = s["DisabilityGroup"].ToString(),
                             examinationDate = (DateTime)s["ExaminationDate"],
                             examinationType = s["ExaminationType"].ToString(),
-                            from = (DateTime)s["From"],
-                            to = (DateTime)s["To"],
-                            reExamination = s["ReExamination"].ToString()
+                            from = (DateTime?)s["From"],
+                            to = (DateTime?)s["To"],
+                            reExamination = s["ReExamination"] != null ? s["ReExamination"].ToString() : ""
                         };
                         return Ok(new[] { obj });
                     }

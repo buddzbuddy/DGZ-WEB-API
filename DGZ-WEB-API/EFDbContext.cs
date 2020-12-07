@@ -2,7 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DGZ_WEB_API
@@ -14,7 +19,6 @@ namespace DGZ_WEB_API
         {
 
         }
-
 
         public DbSet<ownership_type> ownership_types { get; set; }
         public DbSet<supplier> suppliers { get; set; }
