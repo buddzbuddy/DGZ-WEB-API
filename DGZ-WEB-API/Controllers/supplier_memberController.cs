@@ -76,9 +76,9 @@ namespace DGZ_WEB_API.Controllers
         [HttpPost]
         public async Task<ActionResult<supplier_member>> Postsupplier_member(supplier_member supplier_member)
         {
-            if(_context.supplier_members.Any(x => x.pin == supplier_member.pin))
+            if(_context.supplier_members.Any(x => x.pin == supplier_member.pin && x.supplier == supplier_member.supplier))
             {
-                return Ok(new { error = "Гражданин с таким ПИН уже существует" });
+                return Ok(new { error = "Гражданин с таким ПИН у поставщика уже существует" });
             }
 
             _context.supplier_members.Add(supplier_member);

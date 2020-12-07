@@ -100,7 +100,7 @@ namespace DGZ_WEB_API.Controllers
             _context.suppliers.Add(supplier);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Getsupplier", new { id = supplier.id }, supplier);
+            return CreatedAtAction("Get", new { id = supplier.id }, supplier);
         }
 
         // DELETE: api/suppliers/5
