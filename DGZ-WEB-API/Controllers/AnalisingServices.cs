@@ -28,6 +28,7 @@ namespace DGZ_WEB_API.Controllers
             _appSettings = appSettings;
         }
 
+        [HttpGet]
         public ActionResult UpdateSODData()
         {
             //1 - высчетать налоговые регистрацию
