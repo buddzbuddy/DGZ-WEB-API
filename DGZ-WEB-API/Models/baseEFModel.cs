@@ -12,5 +12,6 @@ namespace DGZ_WEB_API.Models
         public int id { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
+        public string pin { get; set; }
     }
 }
