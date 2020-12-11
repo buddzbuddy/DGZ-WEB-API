@@ -39,7 +39,7 @@ namespace DGZ_WEB_API.Controllers
             var list = query.Skip(SkipNo).Take(TopNo);
 
 
-            return await list.ToListAsync();
+            return await list.OrderByDescending(x => x.id).ToListAsync();
         }
 
         // GET: api/suppliers
