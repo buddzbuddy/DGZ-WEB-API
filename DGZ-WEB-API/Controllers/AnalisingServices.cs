@@ -183,14 +183,25 @@ namespace DGZ_WEB_API.Controllers
 
 
         // GET: api/suppliers
-        [HttpGet]
-        public ActionResult GetSuppliersByPage(int page, int size, string order = "desc", string sort = "Id")
+        [HttpPost]
+        public ActionResult GetSuppliersByPage([FromBody]FilterModel filter, int page, int size, string order = "desc", string sort = "Id")
         {
             if (page <= 0) page = 1;
             var TopNo = size;
             var SkipNo = (page - 1) * size;
 
             var query = _context.suppliers.Include(x => x._ownership_type).AsQueryable();
+
+
+            if(filter != null && filter.conditions != null && filter.conditions.Length > 0)
+            {
+                foreach (var condition in filter.conditions)
+                {
+                    if (condition.val != null)
+                        query = query.Where(condition.field_name, condition.operation, condition.val);
+                }
+            }
+
 
             query = query.OrderBy(new SortModel[] { new SortModel { ColId = sort, Sort = order } });
 
@@ -200,6 +211,16 @@ namespace DGZ_WEB_API.Controllers
             return Ok(new { items = list.ToList(), total_count = _context.suppliers.Count() });
         }
 
+    }
+    public class FilterModel
+    {
+        public _condition[] conditions { get; set; }
+        public class _condition
+        {
+            public string field_name { get; set; }
+            public string operation { get; set; }
+            public object val { get; set; }
+        }
     }
     public class SortModel
     {
@@ -233,6 +254,50 @@ namespace DGZ_WEB_API.Controllers
                 count++;
             }
             return count > 0 ? source.Provider.CreateQuery<T>(expression) : source;
+        }
+        public static IQueryable<T> Where<T>(this IQueryable<T> source, string propertyName, string comparison, object value)
+        {
+            return source.Where(ExpressionUtils.BuildPredicate<T>(propertyName, comparison, value));
+        }
+    }
+    public static class ExpressionUtils
+    {
+        public static Expression<Func<T, bool>> BuildPredicate<T>(string propertyName, string comparison, object value)
+        {
+            var parameter = Expression.Parameter(typeof(T));
+            var left = propertyName.Split('.').Aggregate((Expression)parameter, Expression.PropertyOrField);
+            var body = MakeComparison(left, comparison, value);
+            return Expression.Lambda<Func<T, bool>>(body, parameter);
+        }
+
+        static Expression MakeComparison(Expression left, string comparison, object value)
+        {
+            var constant = Expression.Constant(value, left.Type);
+            switch (comparison)
+            {
+                case "==":
+                    return Expression.MakeBinary(ExpressionType.Equal, left, constant);
+                case "!=":
+                    return Expression.MakeBinary(ExpressionType.NotEqual, left, constant);
+                case ">":
+                    return Expression.MakeBinary(ExpressionType.GreaterThan, left, constant);
+                case ">=":
+                    return Expression.MakeBinary(ExpressionType.GreaterThanOrEqual, left, constant);
+                case "<":
+                    return Expression.MakeBinary(ExpressionType.LessThan, left, constant);
+                case "<=":
+                    return Expression.MakeBinary(ExpressionType.LessThanOrEqual, left, constant);
+                case "Contains":
+                case "StartsWith":
+                case "EndsWith":
+                    if (value is string)
+                    {
+                        return Expression.Call(left, comparison, Type.EmptyTypes, constant);
+                    }
+                    throw new NotSupportedException($"Comparison operator '{comparison}' only supported on string.");
+                default:
+                    throw new NotSupportedException($"Invalid comparison operator '{comparison}'.");
+            }
         }
     }
 }
