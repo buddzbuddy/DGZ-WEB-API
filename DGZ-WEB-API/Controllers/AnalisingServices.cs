@@ -272,6 +272,10 @@ namespace DGZ_WEB_API.Controllers
 
         static Expression MakeComparison(Expression left, string comparison, object value)
         {
+            if (left.Type == typeof(int?))
+            {
+                value = (int?)int.Parse(value.ToString());
+            }
             var constant = Expression.Constant(value, left.Type);
             switch (comparison)
             {
