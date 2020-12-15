@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mail;
@@ -120,6 +121,117 @@ namespace DGZ_WEB_API.Controllers
             }
         }
 
-        
+        [HttpGet]
+        public ActionResult GetSources()
+        {
+            var model = new List<_sourceItem>();
+
+            model.Add(new _sourceItem
+            {
+                name = "supplier",
+                caption = "Поставщик"
+            });
+            model.Add(new _sourceItem
+            {
+                name = "counterpart",
+                caption = ""
+            });
+            model.Add(new _sourceItem
+            {
+                name = "counterpart_type",
+                caption = ""
+            });
+            model.Add(new _sourceItem
+            {
+                name = "country",
+                caption = ""
+            });
+            model.Add(new _sourceItem
+            {
+                name = "currency",
+                caption = ""
+            });
+            model.Add(new _sourceItem
+            {
+                name = "msec_detail",
+                caption = ""
+            });
+            model.Add(new _sourceItem
+            {
+                name = "ownership_type",
+                caption = ""
+            });
+            model.Add(new _sourceItem
+            {
+                name = "procuring_entity",
+                caption = ""
+            });
+            model.Add(new _sourceItem
+            {
+                name = "supplier_member",
+                caption = ""
+            });
+
+            return Ok(model);
+        }
+        public class _sourceItem
+        {
+            public string name { get; set; }
+            public string caption { get; set; }
+        }
+
+
+        // GET: api/suppliers
+        [HttpGet]
+        public ActionResult GetSuppliersByPage(int page, int size, string order = "desc", string sort = "Id")
+        {
+            if (page <= 0) page = 1;
+            var TopNo = size;
+            var SkipNo = (page - 1) * size;
+
+            var query = _context.suppliers.AsQueryable();
+
+            query = query.OrderBy(new SortModel[] { new SortModel { ColId = sort, Sort = order } });
+
+            var list = query.Skip(SkipNo).Take(TopNo);
+
+
+            return Ok(new { items = list.ToList(), total_count = _context.suppliers.Count() });
+        }
+
+    }
+    public class SortModel
+    {
+        public string ColId { get; set; }
+        public string Sort { get; set; }
+
+        public string PairAsSqlExpression
+        {
+            get
+            {
+                return $"{ColId} {Sort}";
+            }
+        }
+    }
+    public static class QueryableExtensions
+    {
+        public static IQueryable<T> OrderBy<T>(this IQueryable<T> source, IEnumerable<SortModel> sortModels)
+        {
+            var expression = source.Expression;
+            int count = 0;
+            foreach (var item in sortModels)
+            {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var selector = Expression.PropertyOrField(parameter, item.ColId);
+                var method = string.Equals(item.Sort, "desc", StringComparison.OrdinalIgnoreCase) ?
+                    (count == 0 ? "OrderByDescending" : "ThenByDescending") :
+                    (count == 0 ? "OrderBy" : "ThenBy");
+                expression = Expression.Call(typeof(Queryable), method,
+                    new Type[] { source.ElementType, selector.Type },
+                    expression, Expression.Quote(Expression.Lambda(selector, parameter)));
+                count++;
+            }
+            return count > 0 ? source.Provider.CreateQuery<T>(expression) : source;
+        }
     }
 }
