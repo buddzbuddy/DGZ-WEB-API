@@ -211,6 +211,16 @@ namespace DGZ_WEB_API.Controllers
             return Ok(new { items = list.ToList(), total_count = query.Count() });
         }
 
+        [HttpGet]
+        public ActionResult<string[]> SearchByName(string src)
+        {
+            src = string.IsNullOrEmpty(src) ? "" : src.Trim();
+            if (src.Length > 2)
+            {
+                return _context.suppliers.Where(x => x.name.ToLower().Contains(src.ToLower())).Select(x => x.name).Distinct().ToArray();
+            }
+            return new string[] { };
+        }
     }
     public class FilterModel
     {
