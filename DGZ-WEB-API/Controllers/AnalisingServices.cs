@@ -208,7 +208,7 @@ namespace DGZ_WEB_API.Controllers
             var list = query.Skip(SkipNo).Take(TopNo);
 
 
-            return Ok(new { items = list.ToList(), total_count = _context.suppliers.Count() });
+            return Ok(new { items = list.ToList(), total_count = query.Count() });
         }
 
     }
