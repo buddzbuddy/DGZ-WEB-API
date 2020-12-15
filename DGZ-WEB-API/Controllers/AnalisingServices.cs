@@ -11,6 +11,7 @@ using DGZ_WEB_API.Models;
 using DGZ_WEB_API.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -189,7 +190,7 @@ namespace DGZ_WEB_API.Controllers
             var TopNo = size;
             var SkipNo = (page - 1) * size;
 
-            var query = _context.suppliers.AsQueryable();
+            var query = _context.suppliers.Include(x => x._ownership_type).AsQueryable();
 
             query = query.OrderBy(new SortModel[] { new SortModel { ColId = sort, Sort = order } });
 
