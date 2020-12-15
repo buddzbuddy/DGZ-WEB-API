@@ -10,7 +10,9 @@ namespace DGZ_WEB_API.Models
     {
         public string name { get; set; }
 
+        [ForeignKey("_ownership_type")]
         public int? ownership_type { get; set; }
+        public virtual ownership_type _ownership_type { get; set; }
 
         public string inn { get; set; }
         public string legalAddress { get; set; }
