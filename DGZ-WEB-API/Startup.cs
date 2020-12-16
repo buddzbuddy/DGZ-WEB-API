@@ -16,6 +16,7 @@ namespace DGZ_WEB_API
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -34,6 +35,15 @@ namespace DGZ_WEB_API
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
             services.Configure<Utils.AppSettings>(Configuration.GetSection("AppSettings"));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                                  });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +71,7 @@ namespace DGZ_WEB_API
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseCors(MyAllowSpecificOrigins);
         }
     }
 }

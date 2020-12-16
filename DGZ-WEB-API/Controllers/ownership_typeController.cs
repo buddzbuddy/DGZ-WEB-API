@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DGZ_WEB_API;
 using DGZ_WEB_API.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace DGZ_WEB_API.Controllers
 {
+    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class ownership_typeController : ControllerBase

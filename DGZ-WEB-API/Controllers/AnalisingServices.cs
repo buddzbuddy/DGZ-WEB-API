@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DGZ_WEB_API.Models;
 using DGZ_WEB_API.Utils;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ using Newtonsoft.Json.Linq;
 
 namespace DGZ_WEB_API.Controllers
 {
+    [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class AnalisingServicesController : ControllerBase
