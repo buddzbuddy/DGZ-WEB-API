@@ -214,6 +214,13 @@ namespace DGZ_WEB_API.Controllers
         }
 
         [HttpGet]
+        public ActionResult GetSupplierDetails(int id)
+        {
+            var model = _context.suppliers.Include(x => x._ownership_type).FirstOrDefault(x => x.id == id);
+            return Ok(model);
+        }
+
+        [HttpGet]
         public ActionResult<string[]> SearchByName(string src)
         {
             src = string.IsNullOrEmpty(src) ? "" : src.Trim();
