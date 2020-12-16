@@ -221,6 +221,13 @@ namespace DGZ_WEB_API.Controllers
         }
 
         [HttpGet]
+        public ActionResult GetSupplierMembers(int supplierId)
+        {
+            var model = _context.supplier_members.Include(x => x._member_type).Where(x => x.supplier == supplierId);
+            return Ok(model.ToArray());
+        }
+
+        [HttpGet]
         public ActionResult<string[]> SearchByName(string src)
         {
             src = string.IsNullOrEmpty(src) ? "" : src.Trim();

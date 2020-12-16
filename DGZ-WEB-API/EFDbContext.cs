@@ -33,5 +33,6 @@ namespace DGZ_WEB_API
         public DbSet<registrator> registrators { get; set; }
         public DbSet<supplier_member> supplier_members { get; set; }
         public DbSet<msec_detail> msec_details { get; set; }
+        public DbSet<member_type> member_types { get; set; }
     }
 }
