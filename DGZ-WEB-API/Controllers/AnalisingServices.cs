@@ -358,38 +358,165 @@ namespace DGZ_WEB_API.Controllers
 
             return Content(json, "application/json");
         }
-
-        [Route("api/sf")]
-
-        public ActionResult SF(string pin)
+        [Route("api/sod/sf")]
+        [HttpPost]
+        public ActionResult sf(object jsonObj)
         {
-            using (var client = new HttpClient())
+            if (fetchSOD(jsonObj, out string result))
             {
-                var json = JsonConvert.SerializeObject(
+                var res = JObject.Parse(result);
+                if (res["response"] != null)
+                {
+                    if (res["response"]["GetWorkPeriodInfoResponse"] != null)
+                    {
+                        if (res["response"]["GetWorkPeriodInfoResponse"]["WorkPeriods"] != null)
+                        {
+                            return Ok(res);
+                        }
+                    }
+                }
+            }
+            return Ok(JObject.FromObject(
                     new
                     {
-                        clientId = "a50e1e20-65f9-460f-b70d-b27ce1b79464",
-                        orgName = "?",
-                        request = new
+                        response = new
                         {
-                            GetWorkPeriodInfo = new
+                            GetWorkPeriodInfoResponse = new
                             {
-                                PIN = pin,
-                                RequestOrg = "MTSR",
-                                RequestPerson = "SYSTEM"
+                                WorkPeriod = new object[]
+                            {
+
+                            }
                             }
                         }
-                    });
+                    }
+                    ));
+        }
 
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
+        [Route("api/sod/kadastr")]
+        [HttpPost]
+        public ActionResult kadastr(object jsonObj)
+        {
+            if(fetchSOD(jsonObj, out string result))
+            {
+                var res = JObject.Parse(result);
+                //return Ok(res);
+                if (res["response"] != null)
+                {
+                    if (res["response"]["Searchpin_allResponse"] != null && !(res["response"]["Searchpin_allResponse"] is JValue))
+                    {
+                        if (res["response"]["Searchpin_allResponse"]["Searchpin_allResult"] != null)
+                        {
+                            if(res["response"]["Searchpin_allResponse"]["Searchpin_allResult"]["SFP"] != null)
+                            {
+                                if (res["response"]["Searchpin_allResponse"]["Searchpin_allResult"]["SFP"] is JObject)
+                                {
+                                    return Ok(JObject.FromObject(
+                    new
+                    {
+                        response = new
+                        {
+                            Searchpin_allResponse = new
+                            {
+                                Searchpin_allResult = new
+                                {
+                                    SFP = new object[] { res["response"]["Searchpin_allResponse"]["Searchpin_allResult"]["SFP"] }
+                                }
+                            }
+                        }
+                    }
+                    ));
+                                }
+                                else
+                                {
+                                    return Ok(res);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return Ok(JObject.FromObject(
+                    new
+                    {
+                        response = new
+                        {
+                            Searchpin_allResponse = new
+                            {
+                                Searchpin_allResult = new 
+                            {
+                                    SFP = new object[] { }
+                                }
+                            }
+                        }
+                    }
+                    ));
+        }
 
-                var url = "http://" + _appSettings.Value.SODHost + "/ServiceConstructor/SoapClient/SendRequest2";
+        [Route("api/sod/mtsr")]
+        [HttpPost]
+        public ActionResult mtsr(object jsonObj)
+        {
+            if (fetchSOD(jsonObj, out string result))
+            {
+                var res = JObject.Parse(result);
+                //return Ok(res);
+                if (res["response"] != null)
+                {
+                    if (res["response"]["GetActivePaymentsByPINResponse"] != null)
+                    {
+                        if (res["response"]["GetActivePaymentsByPINResponse"]["response"] != null)
+                        {
+                            return Ok(res);
+                        }
+                    }
+                }
+            }
+            return Ok(JObject.FromObject(
+                    new
+                    {
+                        response = new
+                        {
+                            GetActivePaymentsByPINResponse = new
+                            {
+                                response = new
+                                {
+                                    StartDate = "",
+                                    EndDate = "",
+                                    PaymentTypeName = "",
+                                    PaymentSize = 0,
+                                    OrganizationName = "",
+                                    DocumentNo = "",
+                                    DocumentName = "",
+                                    IsActive = false
+                                }
+                            }
+                        }
+                    }
+                    ));
+        }
 
-                var response = client.PostAsync(url, data).GetAwaiter().GetResult();
+        private bool fetchSOD(object jsonObj, out string result)
+        {
+            result = "";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var json = JsonConvert.SerializeObject(jsonObj);
+                    var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-                string result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    var url = "http://" + _appSettings.Value.SODHost + "/ServiceConstructor/SoapClient/SendRequest2";
 
-                return Ok(JObject.Parse(result));
+                    var response = client.PostAsync(url, data).GetAwaiter().GetResult();
+
+                    result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }
