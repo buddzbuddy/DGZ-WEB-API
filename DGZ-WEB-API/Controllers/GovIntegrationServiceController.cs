@@ -293,6 +293,11 @@ namespace DGZ_WEB_API.Controllers
                     Caption = "Страны",
                     ApiName = "countries"
                 },
+                new ReferenceDescriptionItem
+                {
+                    Caption = "Форма собственности",
+                    ApiName = "ownership_type"
+                },
             };
         }
 

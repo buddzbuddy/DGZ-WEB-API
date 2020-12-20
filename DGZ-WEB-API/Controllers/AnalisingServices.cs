@@ -335,6 +335,13 @@ namespace DGZ_WEB_API.Controllers
     [ApiController]
     public class OverrideController : ControllerBase
     {
+        private readonly IOptions<AppSettings> _appSettings;
+        private readonly EFDbContext _context;
+        public OverrideController(IOptions<AppSettings> appSettings, EFDbContext context)
+        {
+            _context = context;
+            _appSettings = appSettings;
+        }
         [Route("api/export/json")]
         [HttpGet]
         public ActionResult export_json()
@@ -350,6 +357,40 @@ namespace DGZ_WEB_API.Controllers
             var json = System.IO.File.ReadAllText("C:\\distr\\tendering.json");
 
             return Content(json, "application/json");
+        }
+
+        [Route("api/sf")]
+
+        public ActionResult SF(string pin)
+        {
+            using (var client = new HttpClient())
+            {
+                var json = JsonConvert.SerializeObject(
+                    new
+                    {
+                        clientId = "a50e1e20-65f9-460f-b70d-b27ce1b79464",
+                        orgName = "?",
+                        request = new
+                        {
+                            GetWorkPeriodInfo = new
+                            {
+                                PIN = pin,
+                                RequestOrg = "MTSR",
+                                RequestPerson = "SYSTEM"
+                            }
+                        }
+                    });
+
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var url = "http://" + _appSettings.Value.SODHost + "/ServiceConstructor/SoapClient/SendRequest2";
+
+                var response = client.PostAsync(url, data).GetAwaiter().GetResult();
+
+                string result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                return Ok(JObject.Parse(result));
+            }
         }
     }
 }
