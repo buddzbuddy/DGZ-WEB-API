@@ -330,4 +330,26 @@ namespace DGZ_WEB_API.Controllers
             }
         }
     }
+
+    [EnableCors("_myAllowSpecificOrigins")]
+    [ApiController]
+    public class OverrideController : ControllerBase
+    {
+        [Route("api/export/json")]
+        [HttpGet]
+        public ActionResult export_json()
+        {
+            var json = System.IO.File.ReadAllText("C:\\distr\\export-json.json");
+
+            return Content(json, "application/json");
+        }
+        [Route("api/tendering")]
+        [HttpGet]
+        public ActionResult tendering()
+        {
+            var json = System.IO.File.ReadAllText("C:\\distr\\tendering.json");
+
+            return Content(json, "application/json");
+        }
+    }
 }

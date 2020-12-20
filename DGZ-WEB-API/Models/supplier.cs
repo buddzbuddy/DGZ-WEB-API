@@ -23,6 +23,8 @@ namespace DGZ_WEB_API.Models
         public string bic { get; set; }
         public string zip { get; set; }
         public string rayonCode { get; set; }
-        public bool isResident { get; set; }
+        public bool? isResident { get; set; }
+
+        public bool? isBlack { get; set; }
     }
 }
