@@ -371,7 +371,34 @@ namespace DGZ_WEB_API.Controllers
                     {
                         if (res["response"]["GetWorkPeriodInfoResponse"]["WorkPeriods"] != null)
                         {
-                            return Ok(res);
+                            if(res["response"]["GetWorkPeriodInfoResponse"]["WorkPeriods"]["WorkPeriod"] != null)
+                            {
+                                if (res["response"]["GetWorkPeriodInfoResponse"]["WorkPeriods"]["WorkPeriod"] is JArray)
+                                {
+                                    return Ok(res);
+                                }
+                                else if(res["response"]["GetWorkPeriodInfoResponse"]["WorkPeriods"]["WorkPeriod"] is JObject)
+                                {
+                                    return Ok(JObject.FromObject(
+                    new
+                    {
+                        response = new
+                        {
+                            GetWorkPeriodInfoResponse = new
+                            {
+                                WorkPeriods = new
+                                {
+                                    WorkPeriod = new object[]
+                            {
+                                res["response"]["GetWorkPeriodInfoResponse"]["WorkPeriods"]["WorkPeriod"]
+                            }
+                                }
+                            }
+                        }
+                    }
+                    ));
+                                }
+                            }
                         }
                     }
                 }
@@ -383,10 +410,13 @@ namespace DGZ_WEB_API.Controllers
                         {
                             GetWorkPeriodInfoResponse = new
                             {
-                                WorkPeriod = new object[]
+                                WorkPeriods = new
+                                {
+                                    WorkPeriod = new object[]
                             {
 
                             }
+                                }
                             }
                         }
                     }
