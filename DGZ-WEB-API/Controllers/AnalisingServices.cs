@@ -65,6 +65,64 @@ namespace DGZ_WEB_API.Controllers
             //aaaaaa
         }
 
+        [HttpGet]
+        public ActionResult MigrateAllSuppliers()
+        {
+            try
+            {
+                foreach (var s in _context.suppliers)
+                {
+                    var _s = new _supplier
+                    {
+                        created_at = s.created_at,
+                        updated_at = s.updated_at,
+                        bankAccount = s.bankAccount,
+                        factAddress = s.factAddress,
+                        legalAddress = s.legalAddress,
+                        bankName = s.bankName,
+                        bic = s.bic,
+                        id = s.id,
+                        inn = s.inn,
+                        isBlack = s.isBlack,
+                        isResident = s.isResident,
+                        name = s.name,
+                        ownership_type = s.ownership_type,
+                        rayonCode = s.rayonCode,
+                        telephone = s.telephone,
+                        zip = s.zip,
+                        supplier_members = _context.supplier_members.Where(x => x.supplier == s.id).ToArray(),
+                        ip_items = _context.tpb_usiness_activity_date_by_inn_responses.Where(x => x.tin == s.inn).ToArray()
+                    };
+                    migrateSupplier(_s);
+                }
+            }
+            catch (Exception e)
+            {
+
+                return Ok(new { result = false, error = e.Message, trace = e.StackTrace });
+            }
+            return Ok(new { result = true });
+        }
+        class _supplier : supplier
+        {
+            public supplier_member[] supplier_members { get; set; }
+            public tpb_usiness_activity_date_by_inn_response[] ip_items { get; set; }
+        }
+        private void migrateSupplier(_supplier document)
+        {
+            using (var client = new HttpClient())
+            {
+                var json = JsonConvert.SerializeObject(document);
+
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var url = "http://192.168.2.150/dgz-cissa-rest-api/api/DgzImport/CreateSupplier";
+
+                var response = client.PostAsync(url, data).GetAwaiter().GetResult();
+                response.EnsureSuccessStatusCode();
+                string result = response.Content.ReadAsStringAsync().Result;
+            }
+        }
 
         private tpb_usiness_activity_date_by_inn_response get_tpb_usiness_activity_date_by_inn_response(string inn)
         {
