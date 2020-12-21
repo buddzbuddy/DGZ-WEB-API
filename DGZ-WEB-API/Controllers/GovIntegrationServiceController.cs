@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 
 namespace DGZ_WEB_API.Controllers
 {
+    [Microsoft.AspNetCore.Cors.EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class GovIntegrationServiceController : ControllerBase

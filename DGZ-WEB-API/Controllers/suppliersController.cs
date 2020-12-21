@@ -10,6 +10,7 @@ using DGZ_WEB_API.Models;
 
 namespace DGZ_WEB_API.Controllers
 {
+    [Microsoft.AspNetCore.Cors.EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class suppliersController : ControllerBase
