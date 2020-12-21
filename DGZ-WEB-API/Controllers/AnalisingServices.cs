@@ -40,7 +40,7 @@ namespace DGZ_WEB_API.Controllers
         {
             //1 - высчетать налоговые регистрацию
 
-            var suppliers = _context.suppliers.Take(10).ToList();
+            var suppliers = _context.suppliers.Where(x => x.inn.Length == 14).ToList();
 
 
             //2 - обновить информацию руководителям
