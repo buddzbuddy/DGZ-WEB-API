@@ -30,5 +30,7 @@ namespace DGZ_WEB_API.Models
         [ForeignKey("_industry")]
         public int? industry { get; set; }
         public virtual industry _industry { get; set; }
+
+        public virtual ICollection<license> licenses { get; set; }
     }
 }

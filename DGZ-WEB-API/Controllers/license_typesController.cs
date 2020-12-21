@@ -12,46 +12,46 @@ namespace DGZ_WEB_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class member_typesController : ControllerBase
+    public class license_typesController : ControllerBase
     {
         private readonly EFDbContext _context;
 
-        public member_typesController(EFDbContext context)
+        public license_typesController(EFDbContext context)
         {
             _context = context;
         }
 
         // GET: api/countries
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<member_type>>> Getmember_types()
+        public async Task<ActionResult<IEnumerable<license_type>>> Getlicense_types()
         {
-            return await _context.member_types.ToListAsync();
+            return await _context.license_types.ToListAsync();
         }
 
         // GET: api/countries/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<member_type>> Getmember_type(int id)
+        public async Task<ActionResult<license_type>> Getlicense_type(int id)
         {
-            var member_type = await _context.member_types.FindAsync(id);
+            var license_type = await _context.license_types.FindAsync(id);
 
-            if (member_type == null)
+            if (license_type == null)
             {
                 return NotFound();
             }
 
-            return member_type;
+            return license_type;
         }
 
         // PUT: api/countries/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Putmember_type(int id, member_type member_type)
+        public async Task<IActionResult> Putlicense_type(int id, license_type license_type)
         {
-            if (id != member_type.id)
+            if (id != license_type.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(member_type).State = EntityState.Modified;
+            _context.Entry(license_type).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace DGZ_WEB_API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!member_typeExists(id))
+                if (!license_typeExists(id))
                 {
                     return NotFound();
                 }
@@ -74,31 +74,31 @@ namespace DGZ_WEB_API.Controllers
 
         // POST: api/countries
         [HttpPost]
-        public async Task<ActionResult<member_type>> Postmember_type(member_type member_type)
+        public async Task<ActionResult<license_type>> Postlicense_type(license_type license_type)
         {
-            _context.member_types.Add(member_type);
+            _context.license_types.Add(license_type);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Getmember_type", new { id = member_type.id }, member_type);
+            return CreatedAtAction("Getlicense_type", new { id = license_type.id }, license_type);
         }
 
         // DELETE: api/countries/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<member_type>> Deletemember_type(int id)
+        public async Task<ActionResult<license_type>> Deletelicense_type(int id)
         {
-            var member_type = await _context.member_types.FindAsync(id);
-            if (member_type == null)
+            var license_type = await _context.license_types.FindAsync(id);
+            if (license_type == null)
             {
                 return NotFound();
             }
 
-            _context.member_types.Remove(member_type);
+            _context.license_types.Remove(license_type);
             await _context.SaveChangesAsync();
 
-            return member_type;
+            return license_type;
         }
 
-        private bool member_typeExists(int id)
+        private bool license_typeExists(int id)
         {
             return _context.countries.Any(e => e.id == id);
         }

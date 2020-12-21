@@ -253,7 +253,7 @@ namespace DGZ_WEB_API.Controllers
             var TopNo = size;
             var SkipNo = (page - 1) * size;
 
-            var query = _context.suppliers.Include(x => x._ownership_type).Include(x => x._industry).AsQueryable();
+            var query = _context.suppliers.Include(x => x._ownership_type).Include(x => x._industry).Include(x => x.licenses).AsQueryable();
 
 
             if(filter != null && filter.conditions != null && filter.conditions.Length > 0)
@@ -261,7 +261,15 @@ namespace DGZ_WEB_API.Controllers
                 foreach (var condition in filter.conditions)
                 {
                     if (condition.val != null)
-                        query = query.Where(condition.field_name, condition.operation, condition.val);
+                    {
+                        if (condition.field_name == "license__license_type")
+                        {
+                            var subQuery = _context.licenses.Where(x => x.license_type == (int)condition.val).Select(x1 => x1.supplier ?? 0).Distinct().ToArray();
+                            query = query.Where(x => subQuery.Contains(x.id));
+                        }
+                        else
+                            query = query.Where(condition.field_name, condition.operation, condition.val);
+                    }
                 }
             }
 
