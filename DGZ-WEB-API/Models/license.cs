@@ -15,7 +15,6 @@ namespace DGZ_WEB_API.Models
         public string no { get; set; }
         public DateTime? issueDate { get; set; }
         public int? license_type { get; set; }
-        public virtual license_type _license_type { get; set; }
         public DateTime? expiryDate { get; set; }
         public string status { get; set; }
         public string additionalInfo { get; set; }
