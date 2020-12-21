@@ -299,11 +299,11 @@ namespace DGZ_WEB_API.Controllers
             return new string[] { };
         }
         [HttpPost, DisableRequestSizeLimit]
-        public async Task<IActionResult> Upload()
+        public ActionResult Upload()
         {
             try
             {
-                var formCollection = await Request.ReadFormAsync();
+                var formCollection = Request.ReadFormAsync().GetAwaiter().GetResult();
                 var file = formCollection.Files.First();
                 var pathToSave = "c:\\distr";
                 if (file.Length > 0)
@@ -314,31 +314,93 @@ namespace DGZ_WEB_API.Controllers
                     {
                         file.CopyTo(stream);
                     }
-                    /*using (ExcelPackage package = new ExcelPackage(file.OpenReadStream()))
+                    using (ExcelPackage package = new ExcelPackage(file.OpenReadStream()))
                     {
                         StringBuilder sb = new StringBuilder();
                         ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
                         int rowCount = worksheet.Dimension.Rows;
                         int ColCount = worksheet.Dimension.Columns;
-                        bool bHeaderRow = true;
-                        for (int row = 1; row <= rowCount; row++)
+                        int innCol = 1,
+                            nameCol = 2,
+                            ownership_typeCol = 3,
+                            legalAddressCol = 4,
+                            factAddressCol = 5,
+                            telephoneCol = 6,
+                            bankNameCol = 7,
+                            bankAccountCol = 8,
+                            bicCol = 9,
+                            zipCol = 10,
+                            rayonCodeCol = 11,
+                            isResidentCol = 12,
+                            isBlackCol = 13;
+                        string errors = "";
+                        for (int row = 2; row <= rowCount; row++)
                         {
-                            for (int col = 1; col <= ColCount; col++)
+                            try
                             {
-                                if (bHeaderRow)
+                                var inn = "";
+                                if (worksheet.Cells[row, innCol].Value != null) inn = worksheet.Cells[row, innCol].Value.ToString();
+                                var name = "";
+                                if (worksheet.Cells[row, nameCol].Value != null) name = worksheet.Cells[row, nameCol].Value.ToString();
+                                int? ownership_type = null;
+                                if (worksheet.Cells[row, ownership_typeCol].Value != null && worksheet.Cells[row, ownership_typeCol].Value.ToString().Trim() != "") ownership_type = int.Parse(worksheet.Cells[row, ownership_typeCol].Value.ToString());
+                                var legalAddress = "";
+                                if (worksheet.Cells[row, legalAddressCol].Value != null) legalAddress = worksheet.Cells[row, legalAddressCol].Value.ToString();
+                                var factAddress = "";
+                                if (worksheet.Cells[row, factAddressCol].Value != null) factAddress = worksheet.Cells[row, factAddressCol].Value.ToString();
+                                var telephone = "";
+                                if (worksheet.Cells[row, telephoneCol].Value != null) telephone = worksheet.Cells[row, telephoneCol].Value.ToString();
+                                var bankName = "";
+                                if (worksheet.Cells[row, bankNameCol].Value != null) bankName = worksheet.Cells[row, bankNameCol].Value.ToString();
+                                var bankAccount = "";
+                                if (worksheet.Cells[row, bankAccountCol].Value != null) bankAccount = worksheet.Cells[row, bankAccountCol].Value.ToString();
+                                var bic = "";
+                                if (worksheet.Cells[row, bicCol].Value != null) bic = worksheet.Cells[row, bicCol].Value.ToString();
+                                var zip = "";
+                                if (worksheet.Cells[row, zipCol].Value != null) zip = worksheet.Cells[row, zipCol].Value.ToString();
+                                var rayonCode = "";
+                                if (worksheet.Cells[row, rayonCodeCol].Value != null) rayonCode = worksheet.Cells[row, rayonCodeCol].Value.ToString();
+                                bool isResident = true;
+                                if (worksheet.Cells[row, isResidentCol].Value != null && worksheet.Cells[row, isResidentCol].Value.ToString().Trim() != "")
                                 {
-                                    sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+                                    int c = int.Parse(worksheet.Cells[row, isResidentCol].Value.ToString());
+                                    isResident = c == 1;
                                 }
-                                else
+                                bool isBlack = false;
+                                if (worksheet.Cells[row, isBlackCol].Value != null)
                                 {
-                                    sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+                                    int c = int.Parse(worksheet.Cells[row, isBlackCol].Value.ToString());
+                                    isBlack = c == 1;
                                 }
+                                _context.suppliers.Add(new supplier
+                                {
+                                    inn = inn,
+                                    created_at = DateTime.Now,
+                                    updated_at = DateTime.Now,
+                                    bankAccount = bankAccount,
+                                    factAddress = factAddress,
+                                    legalAddress = legalAddress,
+                                    bankName = bankName,
+                                    bic = bic,
+                                    isBlack = isBlack,
+                                    isResident = isResident,
+                                    name = name,
+                                    ownership_type = ownership_type,
+                                    rayonCode = rayonCode,
+                                    telephone = telephone,
+                                    zip = zip
+                                });
                             }
-                            sb.Append(Environment.NewLine);
+                            catch (Exception e)
+                            {
+                                errors += "; error: " + e.Message + ", trace: " + e.StackTrace;
+                                continue;
+                                //throw;
+                            }
                         }
-                        return Ok(new { result = true });
-                    }*/
-                    return Ok(new { result = true, fullPath });
+                        _context.SaveChanges();
+                        return Ok(new { result = true, fullPath, errors });
+                    }
                 }
                 else
                 {
