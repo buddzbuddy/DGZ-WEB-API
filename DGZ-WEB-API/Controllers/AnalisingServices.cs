@@ -253,7 +253,7 @@ namespace DGZ_WEB_API.Controllers
             var TopNo = size;
             var SkipNo = (page - 1) * size;
 
-            var query = _context.suppliers.Include(x => x._ownership_type).AsQueryable();
+            var query = _context.suppliers.Include(x => x._ownership_type).Include(x => x._industry).AsQueryable();
 
 
             if(filter != null && filter.conditions != null && filter.conditions.Length > 0)

@@ -36,5 +36,6 @@ namespace DGZ_WEB_API
         public DbSet<member_type> member_types { get; set; }
         public DbSet<appeal> appeals { get; set; }
         public DbSet<industry> industries { get; set; }
+        public DbSet<license> licenses { get; set; }
     }
 }
