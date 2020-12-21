@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml;
 
 namespace DGZ_WEB_API.Controllers
 {
@@ -294,6 +297,58 @@ namespace DGZ_WEB_API.Controllers
                 return _context.suppliers.Where(x => x.name.ToLower().Contains(src.ToLower())).Select(x => x.name).Distinct().ToArray();
             }
             return new string[] { };
+        }
+        [HttpPost, DisableRequestSizeLimit]
+        public async Task<IActionResult> Upload()
+        {
+            try
+            {
+                var formCollection = await Request.ReadFormAsync();
+                var file = formCollection.Files.First();
+                var pathToSave = "c:\\distr";
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    /*using (ExcelPackage package = new ExcelPackage(file.OpenReadStream()))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                        int rowCount = worksheet.Dimension.Rows;
+                        int ColCount = worksheet.Dimension.Columns;
+                        bool bHeaderRow = true;
+                        for (int row = 1; row <= rowCount; row++)
+                        {
+                            for (int col = 1; col <= ColCount; col++)
+                            {
+                                if (bHeaderRow)
+                                {
+                                    sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+                                }
+                                else
+                                {
+                                    sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+                                }
+                            }
+                            sb.Append(Environment.NewLine);
+                        }
+                        return Ok(new { result = true });
+                    }*/
+                    return Ok(new { result = true, fullPath });
+                }
+                else
+                {
+                    return Ok(new { result = false, error = "Файл не загружен!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { result = false, error = ex.Message, trace = ex.StackTrace });
+            }
         }
     }
     public class FilterModel
