@@ -26,5 +26,9 @@ namespace DGZ_WEB_API.Models
         public bool? isResident { get; set; }
 
         public bool? isBlack { get; set; }
+
+        [ForeignKey("_industry")]
+        public int? industry { get; set; }
+        public virtual industry _industry { get; set; }
     }
 }
