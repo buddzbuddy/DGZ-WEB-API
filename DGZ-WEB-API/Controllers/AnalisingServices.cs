@@ -54,7 +54,8 @@ namespace DGZ_WEB_API.Controllers
             foreach (var item in suppliers)
             {
                 var r = get_tpb_usiness_activity_date_by_inn_response(item.inn);
-                _context.tpb_usiness_activity_date_by_inn_responses.Add(r);
+                if (r != null)
+                    _context.tpb_usiness_activity_date_by_inn_responses.Add(r);
             }
 
             _context.SaveChanges();
@@ -129,7 +130,6 @@ namespace DGZ_WEB_API.Controllers
 
         private tpb_usiness_activity_date_by_inn_response get_tpb_usiness_activity_date_by_inn_response(string inn)
         {
-            tpb_usiness_activity_date_by_inn_response obj = null;
             using (var client = new HttpClient())
             {
                 var json = JsonConvert.SerializeObject(
@@ -161,10 +161,9 @@ namespace DGZ_WEB_API.Controllers
                 if (j["response"]["TPBusinessActivityDateByInnResponse"]["response"] != null)
                 {
                     var s = j["response"]["TPBusinessActivityDateByInnResponse"]["response"];
-                    obj = new tpb_usiness_activity_date_by_inn_response
+                    var obj = new tpb_usiness_activity_date_by_inn_response
                         {
-                            created_at = DateTime.Now,
-                            updated_at = DateTime.Now,
+                        id = 0,
                             legalAddress = s["FullAddress"].ToString(),
                             name = s["FullName"].ToString(),
                             tin = s["TIN"].ToString(),
@@ -178,10 +177,11 @@ namespace DGZ_WEB_API.Controllers
                         var codeName = _context.taxe_codes.FirstOrDefault(x => x.code.Trim() == obj.taxTypeCode.Trim());
                         if (codeName != null) obj.taxTypeName = codeName.name;
                     }
-                    _context.tpb_usiness_activity_date_by_inn_responses.AddRange(obj);
-                    _context.SaveChanges();
+                    //_context.tpb_usiness_activity_date_by_inn_responses.Add(obj);
+                    //_context.SaveChanges();
+                    return obj;
                 }
-                return obj;
+                return null;
             }
         }
 
