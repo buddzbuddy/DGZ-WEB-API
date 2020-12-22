@@ -232,7 +232,7 @@ namespace DGZ_WEB_API.Controllers
             });
             model.Add(new _sourceItem
             {
-                name = "supplier_member",
+                name = "license_type",
                 caption = ""
             });
 
@@ -285,7 +285,32 @@ namespace DGZ_WEB_API.Controllers
         [HttpGet]
         public ActionResult GetSupplierDetails(int id)
         {
-            var model = _context.suppliers.Include(x => x._ownership_type).Include(x => x.licenses).ThenInclude(x => x._license_type).FirstOrDefault(x => x.id == id);
+            var s = _context.suppliers.Include(x => x._ownership_type).Include(x => x.licenses).ThenInclude(x => x._license_type).FirstOrDefault(x => x.id == id);
+            var model = new _supplier
+            {
+                created_at = s.created_at,
+                updated_at = s.updated_at,
+                bankAccount = s.bankAccount,
+                factAddress = s.factAddress,
+                legalAddress = s.legalAddress,
+                bankName = s.bankName,
+                bic = s.bic,
+                id = s.id,
+                inn = s.inn,
+                isBlack = s.isBlack,
+                isResident = s.isResident,
+                name = s.name,
+                ownership_type = s.ownership_type,
+                rayonCode = s.rayonCode,
+                telephone = s.telephone,
+                zip = s.zip,
+                industry = s.industry,
+                licenses = s.licenses,
+                _industry = s._industry,
+                _ownership_type = s._ownership_type,
+                supplier_members = _context.supplier_members.Where(x => x.supplier == s.id).ToArray(),
+                ip_items = _context.tpb_usiness_activity_date_by_inn_responses.Where(x => x.tin == s.inn).ToArray()
+            };
             return Ok(model);
         }
 
