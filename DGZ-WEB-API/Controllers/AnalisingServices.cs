@@ -35,6 +35,7 @@ namespace DGZ_WEB_API.Controllers
             _appSettings = appSettings;
         }
         static bool isLoading = false;
+        [HttpGet]
         public ActionResult IsLoading()
         {
             return Ok(isLoading);
