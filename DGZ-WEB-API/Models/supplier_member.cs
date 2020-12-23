@@ -41,5 +41,6 @@ namespace DGZ_WEB_API.Models
         public int? streetId { get; set; }
         public int? houseId { get; set; }
 
+        public virtual ICollection<pension_info> pension_infos { get; set; }
     }
 }

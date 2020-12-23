@@ -38,30 +38,43 @@ namespace DGZ_WEB_API.Controllers
         [HttpGet]
         public ActionResult UpdateSODData()
         {
+            int ip_infos = 0, pension_infos = 0;
+
             //1 - высчетать налоговые регистрацию
 
             var suppliers = _context.suppliers.Where(x => x.inn.Length == 14).ToList();
-
-
-            //2 - обновить информацию руководителям
-            //Паспорт
-            //СФ
-            //МТСР
-
-            //
-            //3 - таблица измененных значений (анализ изменения)
 
             foreach (var item in suppliers)
             {
                 var r = get_tpb_usiness_activity_date_by_inn_response(item.inn);
                 if (r != null)
+                {
                     _context.tpb_usiness_activity_date_by_inn_responses.Add(r);
+                    ip_infos++;
+                }
+                    
             }
+            //2 - обновить информацию руководителям
+            //СФ
+            foreach (var item in _context.supplier_members.Where(x => x.pin.Length == 14).ToList())
+            {
+                var pension_infoObj = get_pension_info(item.pin);
+                if(pension_infoObj != null)
+                {
+                    pension_infoObj.supplier_member = item.id;
+                    _context.pension_infos.Add(pension_infoObj);
+                    pension_infos++;
+                }
+            }
+            //МТСР
+
+            //
+            //3 - таблица измененных значений (анализ изменения)
 
             _context.SaveChanges();
 
 
-            return Ok();
+            return Ok(new { ip_infos, pension_infos });
         }
         private void calcSti()
         {
@@ -180,6 +193,60 @@ namespace DGZ_WEB_API.Controllers
                     //_context.tpb_usiness_activity_date_by_inn_responses.Add(obj);
                     //_context.SaveChanges();
                     return obj;
+                }
+                return null;
+            }
+        }
+
+        private pension_info get_pension_info(string pin)
+        {
+            using (var client = new HttpClient())
+            {
+                var json = JsonConvert.SerializeObject(
+                    new
+                    {
+                        clientId = "1da179ae-3d5d-40f0-80c0-15de49f44001",
+                        orgName = "ПОРТАЛ",
+                        request = new
+                        {
+                            GetPensionInfoWithSum = new
+                            {
+                                PIN = pin,
+                                RequestOrg = "mlsd",
+                                RequestPerson = "system"
+                            }
+                        }
+                    });
+
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var url = "http://" + _appSettings.Value.SODHost + "/ServiceConstructor/SoapClient/SendRequest2";
+
+                var response = client.PostAsync(url, data).GetAwaiter().GetResult();
+
+                string result = response.Content.ReadAsStringAsync().Result;
+
+                var j = JObject.Parse(result);
+                if (j["response"]["GetPensionInfoWithSumResponse"]["DossierInfoes"] != null)
+                {
+                    var s = j["response"]["GetPensionInfoWithSumResponse"]["DossierInfoes"]["DossierInfoWithSum"];
+                    if(s != null)
+                    {
+                        var obj = new pension_info
+                        {
+                            rusf = s["RUSF"].ToString(),
+                            numDossier = s["NumDossier"].ToString(),
+                            pinPensioner = s["PINPensioner"].ToString(),
+                            pinRecipient = s["PINRecipient"].ToString(),
+                            dateFromInitial = s["DateFromInitial"].ToString(),
+                            sum = s["Sum"].ToString(),
+                            kindOfPension = s["KindOfPension"].ToString(),
+                            categoryPension = s["CategoryPension"].ToString(),
+                            created_at = DateTime.Now,
+                            updated_at = DateTime.Now
+                        };
+                        return obj;
+                    }
                 }
                 return null;
             }

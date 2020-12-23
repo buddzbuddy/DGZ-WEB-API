@@ -38,5 +38,6 @@ namespace DGZ_WEB_API
         public DbSet<industry> industries { get; set; }
         public DbSet<license> licenses { get; set; }
         public DbSet<license_type> license_types { get; set; }
+        public DbSet<pension_info> pension_infos { get; set; }
     }
 }
