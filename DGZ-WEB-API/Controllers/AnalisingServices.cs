@@ -82,9 +82,9 @@ namespace DGZ_WEB_API.Controllers
             //
             //3 - таблица измененных значений (анализ изменения)
 
-            
 
 
+            isLoading = false;
             return Ok(new { ip_infos, pension_infos });
         }
         private void calcSti()
