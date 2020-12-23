@@ -34,10 +34,15 @@ namespace DGZ_WEB_API.Controllers
             _context = context;
             _appSettings = appSettings;
         }
-
+        static bool isLoading = false;
+        public ActionResult IsLoading()
+        {
+            return Ok(isLoading);
+        }
         [HttpGet]
         public ActionResult UpdateSODData()
         {
+            isLoading = true;
             int ip_infos = 0, pension_infos = 0;
 
             //1 - высчетать налоговые регистрацию
@@ -50,6 +55,7 @@ namespace DGZ_WEB_API.Controllers
                 if (r != null)
                 {
                     _context.tpb_usiness_activity_date_by_inn_responses.Add(r);
+                    _context.SaveChanges();
                     ip_infos++;
                 }
                     
@@ -63,6 +69,7 @@ namespace DGZ_WEB_API.Controllers
                 {
                     pension_infoObj.supplier_member = item.id;
                     _context.pension_infos.Add(pension_infoObj);
+                    _context.SaveChanges();
                     pension_infos++;
                 }
             }
@@ -71,7 +78,7 @@ namespace DGZ_WEB_API.Controllers
             //
             //3 - таблица измененных значений (анализ изменения)
 
-            _context.SaveChanges();
+            
 
 
             return Ok(new { ip_infos, pension_infos });
