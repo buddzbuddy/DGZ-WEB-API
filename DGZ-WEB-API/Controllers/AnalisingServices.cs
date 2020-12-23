@@ -36,34 +36,39 @@ namespace DGZ_WEB_API.Controllers
         }
 
         [HttpGet]
-        public ActionResult UpdateSODData()
+        public ActionResult UpdateSODData(bool sti = true, bool sf = true)
         {
             int ip_infos = 0, pension_infos = 0;
 
             //1 - высчетать налоговые регистрацию
-
-            var suppliers = _context.suppliers.Where(x => x.inn.Length == 14).ToList();
-
-            foreach (var item in suppliers)
+            if (sti)
             {
-                var r = get_tpb_usiness_activity_date_by_inn_response(item.inn);
-                if (r != null)
+                var suppliers = _context.suppliers.Where(x => x.inn.Length == 14).ToList();
+
+                foreach (var item in suppliers)
                 {
-                    _context.tpb_usiness_activity_date_by_inn_responses.Add(r);
-                    ip_infos++;
+                    var r = get_tpb_usiness_activity_date_by_inn_response(item.inn);
+                    if (r != null)
+                    {
+                        _context.tpb_usiness_activity_date_by_inn_responses.Add(r);
+                        ip_infos++;
+                    }
+
                 }
-                    
             }
             //2 - обновить информацию руководителям
             //СФ
-            foreach (var item in _context.supplier_members.Where(x => x.pin.Length == 14).ToList())
+            if (sf)
             {
-                var pension_infoObj = get_pension_info(item.pin);
-                if(pension_infoObj != null)
+                foreach (var item in _context.supplier_members.Where(x => x.pin.Length == 14).ToList())
                 {
-                    pension_infoObj.supplier_member = item.id;
-                    _context.pension_infos.Add(pension_infoObj);
-                    pension_infos++;
+                    var pension_infoObj = get_pension_info(item.pin);
+                    if (pension_infoObj != null)
+                    {
+                        pension_infoObj.supplier_member = item.id;
+                        _context.pension_infos.Add(pension_infoObj);
+                        pension_infos++;
+                    }
                 }
             }
             //МТСР
