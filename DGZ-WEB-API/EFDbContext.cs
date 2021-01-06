@@ -39,5 +39,6 @@ namespace DGZ_WEB_API
         public DbSet<license> licenses { get; set; }
         public DbSet<license_type> license_types { get; set; }
         public DbSet<pension_info> pension_infos { get; set; }
+        public DbSet<audit_method_type> audit_method_types { get; set; }
     }
 }
